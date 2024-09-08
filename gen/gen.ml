@@ -11,6 +11,9 @@ let excluded_functions =
   Set.of_list
     (module String)
     [ "multi_margin_loss"
+    ; "_scaled_mm"
+    ; "_scaled_mm_out"
+    ; "_scaled_dot_product_cudnn_attention_backward"
     ; "multi_margin_loss_out"
     ; "log_softmax_backward_data"
     ; "softmax_backward_data"

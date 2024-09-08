@@ -2315,15 +2315,6 @@ void atg__scaled_dot_product_attention_math_for_mps(tensor *out__, tensor query,
   )
 }
 
-void atg__scaled_dot_product_cudnn_attention_backward(tensor *out__, tensor grad_out, tensor query, tensor key, tensor value, tensor out, tensor logsumexp, tensor philox_seed, tensor philox_offset, tensor attn_bias, tensor cum_seq_q, tensor cum_seq_k, int64_t max_q, int64_t max_k, double dropout_p, int is_causal, double scale_v, uint8_t scale_null) {
-  PROTECT(
-    auto outputs__ = torch::_scaled_dot_product_cudnn_attention_backward(*grad_out, *query, *key, *value, *out, *logsumexp, *philox_seed, *philox_offset, *attn_bias, *cum_seq_q, *cum_seq_k, max_q, max_k, dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
-    out__[0] = new torch::Tensor(std::get<0>(outputs__));
-    out__[1] = new torch::Tensor(std::get<1>(outputs__));
-    out__[2] = new torch::Tensor(std::get<2>(outputs__));
-  )
-}
-
 void atg__scaled_dot_product_efficient_attention(tensor *out__, tensor query, tensor key, tensor value, tensor attn_bias, int compute_log_sumexp, double dropout_p, int is_causal, double scale_v, uint8_t scale_null) {
   PROTECT(
     auto outputs__ = torch::_scaled_dot_product_efficient_attention(*query, *key, *value, (attn_bias ? ::std::optional<at::Tensor>(*attn_bias) : ::std::nullopt), (bool)compute_log_sumexp, dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
@@ -2357,20 +2348,6 @@ void atg__scaled_dot_product_flash_attention_for_cpu_backward(tensor *out__, ten
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
-  )
-}
-
-void atg__scaled_mm(tensor *out__, tensor self, tensor mat2, tensor scale_a, tensor scale_b, tensor bias, tensor scale_result, int out_dtype, int use_fast_accum) {
-  PROTECT(
-    auto outputs__ = torch::_scaled_mm(*self, *mat2, *scale_a, *scale_b, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (scale_result ? ::std::optional<at::Tensor>(*scale_result) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (bool)use_fast_accum);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg__scaled_mm_out(tensor *out__, tensor out, tensor self, tensor mat2, tensor scale_a, tensor scale_b, tensor bias, tensor scale_result, int out_dtype, int use_fast_accum) {
-  PROTECT(
-    auto outputs__ = torch::_scaled_mm_out(*out, *self, *mat2, *scale_a, *scale_b, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (scale_result ? ::std::optional<at::Tensor>(*scale_result) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (bool)use_fast_accum);
-    out__[0] = new torch::Tensor(outputs__);
   )
 }
 

@@ -10,6 +10,7 @@
 #include<torch/script.h>
 #include<torch/csrc/jit/passes/tensorexpr_fuser.h>
 #include<torch/csrc/jit/codegen/cuda/interface.h>
+#include<torch/csrc/inductor/aoti_torch/oss_proxy_executor.h>
 #include<stdexcept>
 #include<vector>
 #include "torch_api.h"
@@ -1660,4 +1661,14 @@ void ati_free(ivalue i) {
 
 void at_set_graph_executor_optimize(bool o) {
   torch::jit::setGraphExecutorOptimize(o);
+}
+
+void* torch_aoti_make_proxy_executor(const char* json_filename, bool is_cpu) {
+  return static_cast<torch::aot_inductor::ProxyExecutor*>(
+    new torch::aot_inductor::OSSProxyExecutor(std::string{json_filename}, is_cpu)
+  );
+}
+
+void torch_aoti_delete_proxy_executor(void* proxy_executor) {
+  delete reinterpret_cast<torch::aot_inductor::ProxyExecutor*>(proxy_executor);
 }
