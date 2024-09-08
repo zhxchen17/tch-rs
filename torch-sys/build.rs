@@ -250,6 +250,7 @@ impl SystemInfo {
             libtorch_lib_dir = Some(lib.join("lib"));
             env_var_rerun("LIBTORCH_CXX11_ABI").unwrap_or_else(|_| "1".to_owned())
         };
+        libtorch_include_dirs.push(PathBuf::from("libtch/include"));
         let libtorch_lib_dir = libtorch_lib_dir.expect("no libtorch lib dir found");
         let link_type = match env_var_rerun("LIBTORCH_STATIC").as_deref() {
             Err(_) | Ok("0") | Ok("false") | Ok("FALSE") => LinkType::Dynamic,

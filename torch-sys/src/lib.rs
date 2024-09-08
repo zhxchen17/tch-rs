@@ -332,6 +332,8 @@ extern "C" {
     );
     pub fn atm_set_tensor_expr_fuser_enabled(enabled: c_int);
     pub fn atm_get_tensor_expr_fuser_enabled() -> bool;
+    pub fn torch_aoti_make_proxy_executor(json_filename: *const c_char, is_cpu: bool) -> *mut c_void;
+    pub fn torch_aoti_delete_proxy_executor(proxy_executor: *mut c_void);
 }
 
 extern "C" {

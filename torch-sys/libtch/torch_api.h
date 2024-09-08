@@ -275,6 +275,10 @@ void ati_free(ivalue);
 /// Enables or disables the graph executor optimizer for the current thread.
 void at_set_graph_executor_optimize(bool);
 
+
+void* torch_aoti_make_proxy_executor(const char* json_filename, bool is_cpu);
+void torch_aoti_delete_proxy_executor(void* proxy_executor);
+
 // for internal use
 bool tch_write_stream_destructor(void *stream_ptr);
 bool tch_write_stream_write(void *stream_ptr, const uint8_t *buf, size_t size, size_t *out_size);
