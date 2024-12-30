@@ -415,6 +415,7 @@ impl SystemInfo {
 
 fn main() -> anyhow::Result<()> {
     if !cfg!(feature = "doc-only") {
+        env::var("LIBTORCH").expect("TODO LIBTORCH shall be set.");
         let system_info = SystemInfo::new()?;
         // use_cuda is a hacky way to detect whether cuda is available and
         // if it's the case link to it by explicitly depending on a symbol
@@ -440,62 +441,51 @@ fn main() -> anyhow::Result<()> {
         // Update: it seems that the dummy dependency is not necessary anymore, so just
         // removing it and keeping this comment around for legacy.
         let si_lib = &system_info.libtorch_lib_dir;
-        let use_cuda =
-            si_lib.join("libtorch_cuda.so").exists() || si_lib.join("torch_cuda.dll").exists();
-        let use_cuda_cu = si_lib.join("libtorch_cuda_cu.so").exists()
-            || si_lib.join("torch_cuda_cu.dll").exists();
-        let use_cuda_cpp = si_lib.join("libtorch_cuda_cpp.so").exists()
-            || si_lib.join("torch_cuda_cpp.dll").exists();
-        let use_hip =
-            si_lib.join("libtorch_hip.so").exists() || si_lib.join("torch_hip.dll").exists();
         println!("cargo:rustc-link-search=native={}", si_lib.display());
 
         system_info.make();
 
         println!("cargo:rustc-link-lib=static=tch");
-        if use_cuda {
-            system_info.link("torch_cuda")
-        }
-        if use_cuda_cu {
-            system_info.link("torch_cuda_cu")
-        }
-        if use_cuda_cpp {
-            system_info.link("torch_cuda_cpp")
-        }
-        if use_hip {
-            system_info.link("torch_hip")
-        }
-        if cfg!(feature = "python-extension") {
-            system_info.link("torch_python")
-        }
+
+        assert_eq!(system_info.link_type, LinkType::Static);
         if system_info.link_type == LinkType::Static {
             // TODO: this has only be tried out on the cpu version. Check that it works
             // with cuda too and maybe just try linking all available files?
-            system_info.link("asmjit");
-            system_info.link("clog");
+            // system_info.link("asmjit");
+            // system_info.link("clog");
             system_info.link("cpuinfo");
-            system_info.link("dnnl");
-            system_info.link("dnnl_graph");
-            system_info.link("fbgemm");
+            // system_info.link("dnnl");
+            // system_info.link("dnnl_graph");
+            // system_info.link("fbgemm");
             system_info.link("gloo");
             system_info.link("kineto");
-            system_info.link("nnpack");
+            // system_info.link("nnpack");
             system_info.link("onnx");
             system_info.link("onnx_proto");
             system_info.link("protobuf");
-            system_info.link("pthreadpool");
-            system_info.link("pytorch_qnnpack");
+            // system_info.link("pthreadpool");
+            // system_info.link("pytorch_qnnpack");
             system_info.link("sleef");
-            system_info.link("tensorpipe");
-            system_info.link("tensorpipe_uv");
-            system_info.link("XNNPACK");
+            system_info.link("ittnotify");
+            // system_info.link("tensorpipe");
+            // system_info.link("tensorpipe_uv");
+            // system_info.link("XNNPACK");
+            system_info.link("nccl_static");
+            println!("cargo::rustc-link-search=/usr/local/cuda/extras/CUPTI/lib64");
+            println!("cargo::rustc-link-search=/usr/local/cuda/lib64");
+            println!("cargo:rustc-link-lib=cupti");
+            println!("cargo:rustc-link-lib=cudart");
+            println!("cargo:rustc-link-lib=cusparse");
+            println!("cargo:rustc-link-lib=cublasLt");
+            println!("cargo:rustc-link-lib=cublas");
+            println!("cargo:rustc-link-lib=cufft");
+
         }
         system_info.link("torch_cpu");
         system_info.link("torch");
         system_info.link("c10");
-        if use_hip {
-            system_info.link("c10_hip");
-        }
+        system_info.link("torch_cuda");
+        system_info.link("c10_cuda");
 
         let target = env::var("TARGET").context("TARGET variable not set")?;
 
